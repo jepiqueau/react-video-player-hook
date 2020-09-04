@@ -9,9 +9,8 @@ const allTrue = {
 }
 
 const featureMap = {
-  CapacitorSQLite: {
-    open: {...allTrue, web: false},
-    useSQLite: {...allTrue, web: false},    
+  CapacitorVideoPlayer: {
+    useVideoPlayer: allTrue,    
   }
 }
 

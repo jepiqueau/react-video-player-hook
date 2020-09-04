@@ -1,26 +1,11 @@
 
 jest.mock('@capacitor/core', () => {
-    let mDatabases: any = {};
-    let curDatabase: string = "";
-    let curEncrypted: boolean = false;
-    let curMode: string = "no-encryption";
-    let curTable: string = "";
     var mIsPluginAvailable: boolean = true;
     var platform: string = 'ios';
 return {
       Plugins: {
-        CapacitorSQLite: {
-            open: async (options: any) => {
-                const database = options.database ? options.database : "storage"; 
-                const encrypted: boolean = options.encrypted ? options.encrypted : false;
-                const mode:string = options.mode ? options.mode : "no-encryption";
-                if (!Object.keys(mDatabases).toString().includes(database)) {
-                    let mTables: any = {};
-                    mDatabases[database] = mTables; 
-                }
-                curDatabase = database;
-                curEncrypted = encrypted;
-                curMode = mode;
+        CapacitorVideoPlayer: {
+            initPlayer: async (options: any) => {
                 return {result: true};             
             }
             /* TODO other methods */
@@ -37,20 +22,20 @@ return {
       }
     }
 });
-jest.mock('@capacitor-community/sqlite', () => {
+jest.mock('capacitor-video-player', () => {
     return {
     }
 });
 import { Plugins, Capacitor } from '@capacitor/core';
 import { renderHook, act } from '@testing-library/react-hooks'
-import { useSQLite } from './useSQLite';
+import { useVideoPlayer } from './useVideoPlayer';
 
-it('Check CapacitorSQLite available for ios platform', async () => {
+it('Check CapacitorVideoPlayer available for ios platform', async () => {
     const capacitorMock = (Capacitor as any);
     await act(async () => {
         capacitorMock.__init(true,'ios');
     });
-    const r = renderHook(() => useSQLite());
+    const r = renderHook(() => useVideoPlayer());
 
     await act(async () => {
       const result = r.result.current;
@@ -58,12 +43,12 @@ it('Check CapacitorSQLite available for ios platform', async () => {
       expect(isAvailable).toBe(true);
     });
 });
-it('Check CapacitorSQLite available for android platform', async () => {
+it('Check CapacitorVideoPlayer available for android platform', async () => {
     const capacitorMock = (Capacitor as any);
     await act(async () => {
         capacitorMock.__init(true,'android');
     });
-    const r = renderHook(() => useSQLite());
+    const r = renderHook(() => useVideoPlayer());
   
     await act(async () => {
       const result = r.result.current;
@@ -71,12 +56,12 @@ it('Check CapacitorSQLite available for android platform', async () => {
       expect(isAvailable).toBe(true);
     });
 });
-it('Check CapacitorSQLite available for electron platform', async () => {
+it('Check CapacitorVideoPlayer available for electron platform', async () => {
     const capacitorMock = (Capacitor as any);
     await act(async () => {
         capacitorMock.__init(true, 'electron');
     });
-    const r = renderHook(() => useSQLite());
+    const r = renderHook(() => useVideoPlayer());
   
     await act(async () => {
       const result = r.result.current;
@@ -84,19 +69,19 @@ it('Check CapacitorSQLite available for electron platform', async () => {
       expect(isAvailable).toBe(true);
     });
 });
-it('Check CapacitorSQLite available for web platform', async () => {
+it('Check CapacitorVideoPlayer available for web platform', async () => {
     const capacitorMock = (Capacitor as any);
     await act(async () => {
         capacitorMock.__init(false, 'web');
     });
-    const r = renderHook(() => useSQLite());
+    const r = renderHook(() => useVideoPlayer());
     await act(async () => {
     });
   
     await act(async () => {
       const result = r.result.current;
       const { isAvailable } = result;
-      expect(isAvailable).toBe(false);
+      expect(isAvailable).toBe(true);
     });
 });
     

@@ -1,1 +1,1 @@
-export * from './useSQLite';
+export * from './useVideoPlayer';
