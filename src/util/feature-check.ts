@@ -10,7 +10,7 @@ const allTrue = {
 
 const featureMap = {
   CapacitorVideoPlayer: {
-    useVideoPlayer: allTrue,    
+    useVideoPlayer: allTrue    
   }
 }
 
