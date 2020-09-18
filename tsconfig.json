@@ -14,13 +14,13 @@
       "lib": [
         "dom",
         "dom.iterable",
-        "esnext"
+        "es2015"
       ],
       "module": "es2015",
       "noImplicitAny": true,
       "noUnusedLocals": false,
       "noUnusedParameters": false,
-      "outDir": "dist",
+      "outDir": "dist/esm",
       "sourceMap": true,
       "target": "es2015"
     },

@@ -22,7 +22,7 @@
     "package": "npm pack ./dist",
     "deploy": "npm run build && npm test && np",
     "rollup": "rollup --config rollup.config.js",
-    "transpile": "tsc --module ES2015 --target es2017 --outDir dist",
+    "transpile": "tsc --module ES2015 --target es2015 --outDir dist/esm",
     "clean": "rimraf dist",
     "build-old": "node scripts/build.js",
     "test": "jest"
@@ -44,14 +44,15 @@
   },
   "peerDependencies": {
     "react": "^16.8.6",
-    "@capacitor/core": "^2.0.0"
+    "@capacitor/core": "^2.0.0",
+    "capacitor-video-player": "^2.3.1-2"
   },
   "devDependencies": {
     "@capacitor/core": "^2.0.0",
     "@testing-library/react-hooks": "^3.2.1",
     "@types/jest": "^24.0.23",
     "@types/react-test-renderer": "^16.9.1",
-    "capacitor-video-player": "^2.3.1-1",
+    "capacitor-video-player": "^2.3.1-2",
     "conventional-changelog": "^3.1.4",
     "jest": "^24.9.0",
     "jest-environment-jsdom-fourteen": "^0.1.0",

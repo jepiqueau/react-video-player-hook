@@ -1,4 +1,3 @@
-//Inspired from https://github.com/capacitor-community/react-hooks/blob/master/src/storage/
 import { useCallback, useEffect, useState } from 'react';
 import { Capacitor, Plugins } from '@capacitor/core';
 import { AvailableResult, notAvailable } from './util/models';
@@ -64,20 +63,20 @@ export function useVideoPlayer(): VideoPlayerResult {
      * @param mode string
      * @param url string
      * @param playerId string
-     * @param divContainerElement any
-     * @param width number
-     * @param height number
+     * @param componentTag string
+     * @param width number (optional)
+     * @param height number (optional)
      */
     
     const initPlayer = useCallback(async (mode: string, url: string, playerId: string, componentTag: string,
-                                          /*divContainerElement: any,*/ width?:number, height?:number) => { 
+                                          width?:number, height?:number) => { 
         
         let r;
         if(width && height) {
-            r = await pVideoPlayer.initPlayer({mode: mode, url: url, playerId: playerId, /*divContainerElement: divContainerElement,*/
+            r = await pVideoPlayer.initPlayer({mode: mode, url: url, playerId: playerId,
                 componentTag: componentTag, width: width, height: height});
         } else {
-            r = await pVideoPlayer.initPlayer({mode: mode, url: url, playerId: playerId, /*divContainerElement: divContainerElement*/componentTag: componentTag});
+            r = await pVideoPlayer.initPlayer({mode: mode, url: url, playerId: playerId, componentTag: componentTag});
         }
         if(r) {
             if( typeof r.result != 'undefined') {
