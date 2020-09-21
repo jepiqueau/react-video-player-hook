@@ -35,7 +35,7 @@ it('Check CapacitorVideoPlayer available for ios platform', async () => {
     await act(async () => {
         capacitorMock.__init(true,'ios');
     });
-    const r = renderHook(() => useVideoPlayer());
+    const r = renderHook(() => useVideoPlayer({}));
 
     await act(async () => {
       const result = r.result.current;
@@ -48,7 +48,7 @@ it('Check CapacitorVideoPlayer available for android platform', async () => {
     await act(async () => {
         capacitorMock.__init(true,'android');
     });
-    const r = renderHook(() => useVideoPlayer());
+    const r = renderHook(() => useVideoPlayer({}));
   
     await act(async () => {
       const result = r.result.current;
@@ -61,7 +61,7 @@ it('Check CapacitorVideoPlayer available for electron platform', async () => {
     await act(async () => {
         capacitorMock.__init(true, 'electron');
     });
-    const r = renderHook(() => useVideoPlayer());
+    const r = renderHook(() => useVideoPlayer({}));
   
     await act(async () => {
       const result = r.result.current;
@@ -74,7 +74,7 @@ it('Check CapacitorVideoPlayer available for web platform', async () => {
     await act(async () => {
         capacitorMock.__init(false, 'web');
     });
-    const r = renderHook(() => useVideoPlayer());
+    const r = renderHook(() => useVideoPlayer({}));
     await act(async () => {
     });
   

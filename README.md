@@ -1,10 +1,33 @@
-# React Hook for capacitor-video-player
 
-A React Hook to help Capacitor developpers to use `capacitor-video-player` plugin in React or Ionic/React applications
+<h3 align="center">React Hook for capacitor-video-player</h3>
+<p align="center"><strong><code>react-video-player-hook</code></strong></p>
+<p align="center">A React Hook to help Capacitor developpers to use</p>
+<p align="center"><strong><code>capacitor-video-player/code></strong></p>
+<p align="center">plugin in React or Ionic/React applications
+  Native databases could be encrypted with SQLCipher
+</p>
 
-This is an alpha version and includes only `initPlayer` method 
+<p align="center">
+  <img src="https://img.shields.io/maintenance/yes/2020?style=flat-square" />
+  <a href="https://github.com/react-video-player-hook/actions?query=workflow%3A%22CI%22"><img src="https://img.shields.io/github/workflow/status/react-video-player-hook/CI?style=flat-square" /></a>
+  <a href="https://www.npmjs.com/package/react-video-player-hook"><img src="https://img.shields.io/npm/l/react-video-player-hook?style=flat-square" /></a>
+<br>
+  <a href="https://www.npmjs.com/package/react-video-player-hook"><img src="https://img.shields.io/npm/dw/react-video-player-hook?style=flat-square" /></a>
+  <a href="https://www.npmjs.com/package/react-video-player-hook"><img src="https://img.shields.io/npm/v/react-video-player-hook?style=flat-square" /></a>
+<!-- ALL-CONTRIBUTORS-BADGE:START - Do not remove or modify this section -->
+<a href="#contributors-"><img src="https://img.shields.io/badge/all%20contributors-1-orange?style=flat-square" /></a>
+<!-- ALL-CONTRIBUTORS-BADGE:END -->
+</p>
 
-## Getting Started in your Ionic/React App
+
+## Maintainers
+
+| Maintainer        | GitHub                                    | Social |
+| ----------------- | ----------------------------------------- | ------ |
+| Quéau Jean Pierre | [jepiqueau](https://github.com/jepiqueau) |        |
+
+
+## Installation
 
 ```bash
 npm install --save capacitor-video-player
@@ -22,6 +45,37 @@ npm install --save-dev react-video-player-hook
   - [react-videoplayer-hook-app](https://github.com/jepiqueau/react-videoplayer-hook-app)
 
 
+## Supported methods
+
+| Name                               | Android | iOS | Electron | Web |
+| :--------------------------------- | :------ | :-- | :------- | :-- |
+| initPlayer (mode fullscreen)       | ✅      | ✅  | ✅       | ✅  |
+| initPlayer (mode embedded)         | ❌      | ❌  | ✅       | ✅  |
+| initPlayer (url internal)          | ✅      | ✅  | ❌       | ❌  |
+| initPlayer (url application/files) | ✅      | ✅  | ❌       | ❌  |
+| isPlaying                          | ✅      | ✅  | ✅       | ✅  |
+| play                               | ✅      | ✅  | ✅       | ✅  |
+| pause                              | ✅      | ✅  | ✅       | ✅  |
+| getCurrentTime                     | ✅      | ✅  | ✅       | ✅  |
+| setCurrentTime                     | ✅      | ✅  | ✅       | ✅  |
+| getDuration                        | ✅      | ✅  | ✅       | ✅  |
+| getMuted                           | ✅      | ✅  | ✅       | ✅  |
+| setMuted                           | ✅      | ✅  | ✅       | ✅  |
+| getVolume                          | ✅      | ✅  | ✅       | ✅  |
+| setVolume                          | ✅      | ✅  | ✅       | ✅  |
+| stopAllPlayers                     | ✅      | ✅  | ✅       | ✅  |
+
+## Supported listeners
+
+| Name     | Android | iOS | Electron | Web |
+| :------- | :------ | :-- | :------- | :-- |
+| onReady  | ✅      | ✅  | ✅       | ✅  |
+| onPlay   | ✅      | ✅  | ✅       | ✅  |
+| onPause  | ✅      | ✅  | ✅       | ✅  |
+| jonEnded | ✅      | ✅  | ✅       | ✅  |
+| onExit   | ✅      | ✅  | ✅       | ✅  |
+
+
 ## Usage
 Import the hook from its own path:
 
@@ -36,26 +90,130 @@ import React from 'react'
 import { Capacitor } from '@capacitor/core';
 import { useState, useEffect, useRef } from 'react';
 import { useVideoPlayer } from 'react-video-player-hook';
+import { ExitStatus } from 'typescript';
 
 
 const VideoPlayer = () => {
     const [url, setUrl] = useState( undefined );
     const platform = Capacitor.getPlatform();
 
-    const {pVideoPlayer, initPlayer, isPlaying, pause, play, getDuration, setVolume,
-        getVolume, setMuted, getMuted, setCurrentTime, getCurrentTime, stopAllPlayers} = useVideoPlayer();
-    
     let apiTimer1 = useRef();
     let apiTimer2 = useRef();
     let apiCount = useRef(-1);
-    const [first, setFirst] = useState(true);
+    const exit = useRef(false)
 
+    const onPlay = async (fromPlayerId,currentTime) => {
+        if(!exit.current) {
+            const mIsPlaying = await isPlaying(fromPlayerId);
+            console.log("==> mIsPlaying " + JSON.stringify(mIsPlaying));
+            apiCount.current += 1;
+            if(apiCount.current === 0) {
+                const volume = await getVolume(fromPlayerId);
+                if(volume.result) {
+                    console.log("==> volume " + volume.value);
+                } else {
+                    console.log("==> volume " + volume.message);
+                }
+                apiTimer1.current = setTimeout(async () => {
+                    const duration = await getDuration(fromPlayerId);
+                    console.log("==> duration " + 
+                                JSON.stringify(duration));
+                    if(duration.result) {
+                        console.log("==> duration " + duration.value);
+                    } else {
+                        console.log("==> duration " + duration.message);
+                    }
+                    const volume = await setVolume(fromPlayerId,0.2);
+                    console.log("====> Volume ",volume.value);
+                    const currentTime = await getCurrentTime(
+                                        fromPlayerId);
+                    if(currentTime.result) {
+                        console.log('==> currentTime ' + 
+                                currentTime.value);
+                        const seektime = currentTime.value + 
+                                0.4 * duration.value; 
+                        console.log("seektime" + seektime)
+                        const sCurrentTime = await setCurrentTime(
+                                                fromPlayerId,seektime);
+                        console.log("==> setCurrentTime " + 
+                                sCurrentTime.value);
+                    }
+                    const mPause = await pause(fromPlayerId);
+                    console.log('==> mPause ', mPause);
+                }, 10000);
+            } 
+        }
+    };
+    const onPause = async (fromPlayerId,currentTime) => {
+            if(!exit.current) {
+            if(apiCount.current === 0) {
+                apiCount.current += 1;
+                const mIsPlaying = await isPlaying(fromPlayerId);
+                console.log("==> in Pause mIsPlaying " +
+                        mIsPlaying.value);
+                const volume = await getVolume(fromPlayerId);
+                if(volume.result) {
+                    console.log("==> volume " + volume.value);
+                }                
+                const currentTime = await getCurrentTime(fromPlayerId);
+                if(currentTime.result) {
+                    console.log('==> currentTime ' + currentTime.value);
+                }
+                let muted = await getMuted(fromPlayerId);
+                console.log("==> muted before setMuted " + muted.value);
+                muted = await setMuted(fromPlayerId,!muted.value);
+                console.log("==> setMuted " + muted.value);
+                muted = await getMuted(fromPlayerId);
+                console.log("==> muted after setMuted " + muted.value);
+                apiTimer2.current = setTimeout(async () => {
+                    const duration = await getDuration(fromPlayerId);
+                    const rCurrentTime = await setCurrentTime(
+                                        fromPlayerId,duration.value - 4);
+                    console.log('====> setCurrentTime ',
+                            rCurrentTime.value);
+                    await play(fromPlayerId);
+                }, 4000);
+            }
+        }
+    };
+    const onReady = (fromPlayerId,currentTime) => {
+        console.log("in OnReady playerId " + fromPlayerId +
+                " currentTime " + currentTime);
+    };
+    const onEnded = (fromPlayerId,currentTime) => {
+        console.log("in OnEnded playerId " + fromPlayerId +
+                " currentTime " + currentTime);
+        exitClear();
+    };
+    const onExit = (dismiss) => {
+        console.log("in OnExit dismiss " + dismiss);
+        exitClear();
+    };
     const exitClear = () => {
-        console.log("%%%% in cleanup Timers %%%%")
-        clearTimeout(apiTimer1);
-        clearTimeout(apiTimer2);
-        setFirst(false);
-    }
+        if(!ExitStatus.current) {
+            console.log("%%%% in cleanup Timers %%%%")
+            window.clearTimeout(apiTimer1.current);
+            window.clearTimeout(apiTimer2.current);
+            apiTimer1.current = 0;
+            apiTimer2.current = 0;
+            console.log("apiTimer1.current " + apiTimer1.current)
+            console.log("apiTimer2.current " + apiTimer2.current)
+            exit.current = true;
+            console.log("exit.current " + exit.current)
+            setUrl("");
+            console.log("url " + url)
+        }
+    };
+    const {initPlayer, isPlaying, pause, play, getDuration, setVolume,
+        getVolume, setMuted, getMuted, setCurrentTime, getCurrentTime,
+        stopAllPlayers} = useVideoPlayer({
+            onReady,
+            onPlay,
+            onPause,
+            onEnded,
+            onExit
+    });
+
     useEffect(  () => {
         if ( platform === "ios" || platform === "android" ) {
             // test url from public/assets
@@ -68,133 +226,48 @@ const VideoPlayer = () => {
     
 
     useEffect( () => {
-        let playListener = null;
-        let pauseListener = null;
-        let readyListener = null;
-        let exitListener = null;
-        let endedListener = null;
-        if(first && pVideoPlayer && url ) {
+        console.log("%%%%% starting useEffect exit " + exit.current + " %%%%%")
+
+        if( url && !exit.current ) {
             // test mode "embedded" for video player on Web platform
             const playerWeb = async () => {
-                let res;
-                res = await initPlayer( "embedded", url, "fullscreen-video", 'div', 1280, 720);
+                await initPlayer( "embedded", url,
+                "fullscreen-video",'div', 1280, 720);
+
                 if ( res.result.result && res.result.value ) {
                     res = await play( "fullscreen-video" );
                 }
+/*                // test mode "fullscreen" for video player on Web platform
+                await initPlayer( "fullscreen", url,
+                                   "fullscreen-video",'div');
+*/
             }
-            // test mode "fullscreen" for video player on native platform
+            // test mode "fullscreen" for video player 
+            // on native platforms
             const playerNative = async () => {
                 try {
-                    await initPlayer("fullscreen", url, "fullscreen-video");
+                    await initPlayer("fullscreen", url,
+                                     "fullscreen-video");
+
                 } catch ( error ) {
                     console.log( error );
                 }
             }
-            console.log("pVideoPlayer " + pVideoPlayer)
-            console.log("url " + url)
-            playListener = pVideoPlayer.addListener( 'jeepCapVideoPlayerPlay', async( e ) => { 
-                console.log( "Event jeepCapVideoPlayerPlay playerId " + 
-                e.fromPlayerId + " time " + e.currentTime);
-                const mIsPlaying = await isPlaying(e.fromPlayerId);
-                console.log("==> mIsPlaying " + JSON.stringify(mIsPlaying));
-                apiCount.current += 1;
-                if(apiCount.current === 0) {
-                    const volume = await getVolume(e.fromPlayerId);
-                    if(volume.result) {
-                        console.log("==> volume " + volume.value);
-                    } else {
-                        console.log("==> volume " + volume.message);
-                    }
-                    apiTimer1.current = setTimeout(async () => {
-                        const duration = await getDuration(e.fromPlayerId);
-                        console.log("==> duration " + JSON.stringify(duration));
-                        if(duration.result) {
-                            console.log("==> duration " + duration.value);
-                        } else {
-                            console.log("==> duration " + duration.message);
-                        }
-                            const volume = await setVolume(e.fromPlayerId,0.2);
-                        console.log("====> Volume ",volume.value);
-                        const currentTime = await getCurrentTime(e.fromPlayerId);
-                        if(currentTime.result) {
-                            console.log('==> currentTime ' + currentTime.value);
-                            const seektime = currentTime.value + 0.4 * duration.value; 
-                            console.log("seektime" + seektime)
-                            const sCurrentTime = await setCurrentTime(e.fromPlayerId,seektime);
-                            console.log("==> setCurrentTime " + sCurrentTime.value);
-                        }
-                        const mPause = await pause(e.fromPlayerId);
-                        console.log('==> mPause ', mPause);
-                    }, 10000);
-                } 
-            }, false );
-            pauseListener = pVideoPlayer.addListener( 'jeepCapVideoPlayerPause', async ( e ) => { 
-                console.log( "Event jeepCapVideoPlayerPause playerId " + 
-                e.fromPlayerId + " time " + e.currentTime);
-                if(apiCount.current === 0) {
-                    const mIsPlaying = await isPlaying(e.fromPlayerId);
-                    console.log("==> in Pause mIsPlaying " + mIsPlaying.value);
-                    const volume = await getVolume(e.fromPlayerId);
-                    if(volume.result) {
-                        console.log("==> volume " + volume.value);
-                    }                
-                    const currentTime = await getCurrentTime(e.fromPlayerId);
-                    if(currentTime.result) {
-                        console.log('==> currentTime ' + currentTime.value);
-                    }
-                    let muted = await getMuted(e.fromPlayerId);
-                    console.log("==> muted before setMuted " + muted.value);
-                    muted = await setMuted(e.fromPlayerId,!muted.value);
-                    console.log("==> setMuted " + muted.value);
-                    muted = await getMuted(e.fromPlayerId);
-                    console.log("==> muted after setMuted " + muted.value);
-                    apiTimer2.current = setTimeout(async () => {
-                        const duration = await getDuration(e.fromPlayerId);
-                        const rCurrentTime = await setCurrentTime(e.fromPlayerId,duration.value - 4);
-                        console.log('====> setCurrentTime ', rCurrentTime.value);
-                        await play(e.fromPlayerId);
-                    }, 4000);
-                }
-            }, false );
-            readyListener = pVideoPlayer.addListener( 'jeepCapVideoPlayerReady', ( e ) => { 
-                console.log( "Event jeepCapVideoPlayerReady  playerId " + 
-                e.fromPlayerId + " time " + e.currentTime); 
-            }, false );
-            exitListener = pVideoPlayer.addListener( 'jeepCapVideoPlayerExit', ( e ) => { 
-                console.log( "Event jeepCapVideoPlayerExit  playerId " + 
-                e.fromPlayerId + " time " + e.currentTime);
-                exitClear();
-            }, false );
-            endedListener = pVideoPlayer.addListener( 'jeepCapVideoPlayerEnded', ( e ) => {
-                console.log( "Event jeepCapVideoPlayerEnded  playerId " + 
-                e.fromPlayerId + " time " + e.currentTime); 
-                exitClear();
-            }, false );
             if ( platform === "ios" || platform === "android" )
                 playerNative();
             else
                 playerWeb(); 
         
         }
-
-        return () => {
-            console.log("$$$$$$$$ in cleanup listeners $$$$$$$$")
-            // Clean up the listeners
-            if(playListener != null) playListener.remove();
-            if(pauseListener != null) pauseListener.remove();
-            if(readyListener != null) readyListener.remove();
-            if(exitListener != null) exitListener.remove();
-            if(endedListener != null) endedListener.remove();
-        };
         
-    }, [pVideoPlayer, initPlayer, play, isPlaying, pause, getDuration,
+    }, [initPlayer, play, isPlaying, pause, getDuration,
         getVolume, setVolume, getCurrentTime, setCurrentTime, 
-        getMuted, setMuted, platform, url, first] )
-
+        getMuted, setMuted, stopAllPlayers,
+        platform, url, exit] );
 
     return (
         <div className="main-container">
-            {(first) &&
+            {(!exit.current) &&
                 <div id="fullscreen-video" slot="fixed">
                 </div>
             }
@@ -204,6 +277,26 @@ const VideoPlayer = () => {
 
 export default VideoPlayer
 ``` 
+
+## Contributors ✨
+
+Thanks goes to these wonderful people ([emoji key](https://allcontributors.org/docs/en/emoji-key)):
+
+<!-- ALL-CONTRIBUTORS-LIST:START - Do not remove or modify this section -->
+<!-- prettier-ignore-start -->
+<!-- markdownlint-disable -->
+<table>
+  <tr>
+    <td align="center"><a href="https://github.com/jepiqueau"><img src="https://avatars3.githubusercontent.com/u/16580653?v=4" width="100px;" alt=""/><br /><sub><b>Jean Pierre Quéau</b></sub></a><br /><a href="https://github.com/jepiqueau/react-video-player-hook/commits?author=jepiqueau" title="Code">💻</a></td>
+  </tr>
+</table>
+
+<!-- markdownlint-enable -->
+<!-- prettier-ignore-end -->
+
+<!-- ALL-CONTRIBUTORS-LIST:END -->
+
+This project follows the [all-contributors](https://github.com/all-contributors/all-contributors) specification. Contributions of any kind welcome!
 
 
 
