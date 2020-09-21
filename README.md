@@ -1,3 +1,4 @@
+<p align="center"><br><img src="https://avatars3.githubusercontent.com/u/16580653?v=4" width="128" height="128" /></p>
 
 <h3 align="center">React Hook for capacitor-video-player</h3>
 <p align="center"><strong><code>react-video-player-hook</code></strong></p>
@@ -9,7 +10,6 @@
 
 <p align="center">
   <img src="https://img.shields.io/maintenance/yes/2020?style=flat-square" />
-  <a href="https://github.com/react-video-player-hook/actions?query=workflow%3A%22CI%22"><img src="https://img.shields.io/github/workflow/status/react-video-player-hook/CI?style=flat-square" /></a>
   <a href="https://www.npmjs.com/package/react-video-player-hook"><img src="https://img.shields.io/npm/l/react-video-player-hook?style=flat-square" /></a>
 <br>
   <a href="https://www.npmjs.com/package/react-video-player-hook"><img src="https://img.shields.io/npm/dw/react-video-player-hook?style=flat-square" /></a>
