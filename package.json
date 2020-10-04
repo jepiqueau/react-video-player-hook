@@ -1,6 +1,6 @@
 {
   "name": "react-video-player-hook",
-  "version": "0.0.3",
+  "version": "0.0.4",
   "description": "React Hook for capacitor-video-player plugin",
   "repository": {
     "type": "git",
