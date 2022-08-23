@@ -1,3 +1,14 @@
+## 1.0.1 (2022-08-23)
+
+### Chore
+
+ - Update to @capacitor/core 3.7.0
+ - Update to @capacitor/ios 3.7.0
+ - Update to @capacitor/android 3.7.0
+
+### Bug Fixes
+
+ - fix Removing Listeners issue#2 
 
 ## 0.0.3 (2020-08-07)
 

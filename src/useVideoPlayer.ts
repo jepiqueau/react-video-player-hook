@@ -112,10 +112,10 @@ export function useVideoPlayer({
             });
         return () => {
             if(readyListener) readyListener.remove();
-            if(playListener) readyListener.remove();
-            if(pauseListener) readyListener.remove();
-            if(endedListener) readyListener.remove();
-            if(exitListener) readyListener.remove();
+            if(playListener) playListener.remove();
+            if(pauseListener) pauseListener.remove();
+            if(endedListener) endedListener.remove();
+            if(exitListener) exitListener.remove();
         }
     }, []);
  
